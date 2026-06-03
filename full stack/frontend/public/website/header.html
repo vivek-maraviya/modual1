@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo" target="_top">
+            <i class="fa-solid fa-cube"></i> ModernCommerce
+        </a>
+
+        <ul>
+            <li><a href="index.html" target="_top">Home</a></li>
+            <li><a href="categorie.html" target="_top">Category</a></li>
+            <li><a href="about.html" target="_top">About</a></li>
+            <li><a href="contact.html" target="_top">Contact</a></li>
+            <li><a href="cart.html" target="_top">Cart</a></li>
+            <li id="nav-profile-link" style="display:none;">
+                <a href="myprofile.html" target="_top">My Profile</a>
+            </li>
+        </ul>
+
+        <div class="nav-btns">
+            <div id="nav-logged-out" style="display: flex; gap: 15px;">
+                <a href="login.html" class="login-btn" target="_top">Login</a>
+                <a href="signup.html" class="signup-btn" target="_top">Sign Up</a>
+            </div>
+
+            
+            <div id="nav-logged-in" style="display:none; align-items:center; gap:12px;">
+                <a href="myprofile.html" target="_top" id="nav-user-name" style="font-weight:600; color:inherit; text-decoration:none;"></a>
+                <a href="#" class="login-btn" id="nav-logout-btn" target="_top">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        function updateNavState() {
+            var user = JSON.parse(localStorage.getItem("mc_logged_in_user") || "null");
+
+            var loggedOut = document.getElementById("nav-logged-out");
+            var loggedIn  = document.getElementById("nav-logged-in");
+            var profileLink = document.getElementById("nav-profile-link");
+            var userName = document.getElementById("nav-user-name");
+
+            if (user) {
+                // Logged in
+                loggedOut.style.display = "none";
+                loggedIn.style.display  = "flex";
+                profileLink.style.display = "list-item";
+
+                var displayName = (user.fname && user.lname)
+                    ? user.fname + " " + user.lname
+                    : (user.name || user.email || "My Account");
+                userName.innerText = "Hi, " + displayName.split(" ")[0];
+            } else {
+                // Logged out
+                loggedOut.style.display = "flex";
+                loggedIn.style.display  = "none";
+                profileLink.style.display = "none";
+            }
+        }
+
+        document.getElementById("nav-logout-btn").addEventListener("click", function(e) {
+            e.preventDefault();
+            localStorage.removeItem("mc_logged_in_user");
+            window.top.location.href = "index.html";
+        });
+
+        updateNavState();
+
+        window.addEventListener("storage", updateNavState);
+    </script>
+
+</body>
+</html>

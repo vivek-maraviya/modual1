@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ModernCommerce</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .error-msg {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <iframe src="header.html" class="header-frame" frameborder="0"></iframe>
+
+    <div class="auth-wrapper">
+        <div class="auth-box">
+            <h2>Welcome Back</h2>
+            <p class="sub-text">Sign in to your ModernCommerce account.</p>
+
+
+            <div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="remember-forgot">
+                    <label><input type="checkbox" id="remember-me"> Remember me</label>
+                    <a href="#">Forgot password?</a>
+                </div>
+
+                <p class="error-msg" id="login-error">
+                    <i class="fa-solid fa-circle-exclamation"></i> Invalid email or password. Please try again.
+                </p>
+
+                <button type="button" class="blue-btn full-width-btn" onclick="handleLogin()">Sign In</button>
+            </div>
+
+            <p class="auth-bottom-text">Don't have an account? <a href="signup.html">Create one</a></p>
+        </div>
+    </div>
+
+    <script>
+
+        (function() {
+            var user = localStorage.getItem("mc_logged_in_user");
+            if (user) window.location.href = "index.html";
+        })();
+
+        function handleLogin() {
+            var email    = document.getElementById("login-email").value.trim();
+            var password = document.getElementById("login-password").value;
+            var errorEl  = document.getElementById("login-error");
+
+            if (!email || !password) {
+                errorEl.style.display = "block";
+                errorEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Please fill in all fields.';
+                return;
+            }
+
+  
+            var users = JSON.parse(localStorage.getItem("mc_users") || "[]");
+            var matchedUser = users.find(function(u) {
+                return u.email.toLowerCase() === email.toLowerCase() && u.password === password;
+            });
+
+            if (!matchedUser) {
+                errorEl.style.display = "block";
+                errorEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Invalid email or password. Please try again.';
+                return;
+            }
+
+            errorEl.style.display = "none";
+
+    
+            var savedProfile = JSON.parse(localStorage.getItem("mc_profile") || "{}");
+
+            var loggedInData = {
+                email:  matchedUser.email,
+                name:   matchedUser.name,
+                fname:  savedProfile.fname || (matchedUser.name ? matchedUser.name.split(" ")[0] : ""),
+                lname:  savedProfile.lname || (matchedUser.name ? matchedUser.name.split(" ").slice(1).join(" ") : ""),
+                phone:   savedProfile.phone   || "",
+                address: savedProfile.address || "",
+                city:    savedProfile.city    || "",
+                pincode: savedProfile.pincode || ""
+            };
+
+            localStorage.setItem("mc_logged_in_user", JSON.stringify(loggedInData));
+
+ 
+            if (document.getElementById("remember-me").checked) {
+                localStorage.setItem("mc_remember_email", email);
+            }
+
+            window.location.href = "index.html";
+        }
+
+  
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") handleLogin();
+        });
+
+
+        window.onload = function() {
+            var remembered = localStorage.getItem("mc_remember_email");
+            if (remembered) {
+                document.getElementById("login-email").value = remembered;
+                document.getElementById("remember-me").checked = true;
+            }
+        };
+    </script>
+
+</body>
+</html>

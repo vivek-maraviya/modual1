@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | ModernCommerce</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <iframe src="header.html" class="header-frame" frameborder="0"></iframe>
+
+    <div class="page-banner">
+        <h1>All categorie Products</h1>
+        <p>Explore our full collection across all categories.</p>
+    </div>
+
+    <div class="products-page">
+
+        
+        <div class="category-tabs" id="cat-tabs">
+            <div class="cat-tab active" onclick="filterCategory('All')" data-cat="All">
+                <i class="fa-solid fa-border-all"></i> All
+            </div>
+            <div class="cat-tab" onclick="filterCategory('Wearables')" data-cat="Wearables">
+                <i class="fa-solid fa-clock"></i> Wearables
+            </div>
+            <div class="cat-tab" onclick="filterCategory('Electronics')" data-cat="Electronics">
+                <i class="fa-solid fa-bolt"></i> Electronics
+            </div>
+            <div class="cat-tab" onclick="filterCategory('Audio')" data-cat="Audio">
+                <i class="fa-solid fa-headphones"></i> Audio
+            </div>
+            <div class="cat-tab" onclick="filterCategory('Bags')" data-cat="Bags">
+                <i class="fa-solid fa-bag-shopping"></i> Bags
+            </div>
+            <div class="cat-tab" onclick="filterCategory('Footwear')" data-cat="Footwear">
+                <i class="fa-solid fa-shoe-prints"></i> Footwear
+            </div>
+            <div class="cat-tab" onclick="filterCategory('Accessories')" data-cat="Accessories">
+                <i class="fa-solid fa-glasses"></i> Accessories
+            </div>
+        </div>
+
+
+        <div class="section-heading">
+            <h2 id="active-cat-title">All Products</h2>
+            <span class="result-count" id="result-count">24 products</span>
+        </div>
+
+
+        <div class="product-grid" id="product-grid"></div>
+
+
+        <div class="no-results" id="no-results">
+            <i class="fa-solid fa-box-open"></i>
+            No products found in this category.
+        </div>
+
+
+        <div style="text-align:center; margin-top:36px;">
+            <button class="outline-btn" id="load-more-btn" onclick="loadMore()">Load More</button>
+        </div>
+
+    </div>
+
+    <iframe src="footer.html" class="footer-frame" frameborder="0"></iframe>
+
+
+    <button id="scroll-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check" style="margin-right:8px; color:#4ade80;"></i>
+        <span id="toast-text">Added to cart!</span>
+    </div>
+
+    <script>
+
+        var allProducts = [
+           
+            { id: 1, name: "Classic Minimal Watch", category: "Wearables", price: 2499, desc: "Sleek stainless steel case with leather strap. Water resistant up to 30m.", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" },
+            { id: 2, name: "Smart Fitness Band", category: "Wearables", price: 1899, desc: "Track steps, heart rate, sleep and more. 7-day battery life.", img: "images/fitnessband.jpg" },
+            { id: 3, name: "Chronograph Watch", category: "Wearables", price: 4999, desc: "Multi-function dial with premium mesh bracelet. Date display included.", img:"images/corno.jpg"},
+            { id: 4, name: "Smart Watch Pro", category: "Wearables", price: 6499, desc: "AMOLED display, GPS, SpO2 monitor. Compatible with iOS & Android.", img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400" },
+            
+            { id: 5, name: "Wireless Charger Pad", category: "Electronics", price: 999, desc: "15W fast wireless charging. Compatible with all Qi-enabled devices.", img: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400" },
+            { id: 6, name: "USB-C Hub 7-in-1", category: "Electronics", price: 1799, desc: "HDMI 4K, 3x USB-A, SD card reader, 100W PD. Slim aluminum body.", img: "images/usb.jpg" },
+            { id: 7, name: "Portable Power Bank 20000mAh", category: "Electronics", price: 1499, desc: "Dual USB + Type-C output. Charges 3 devices simultaneously.", img: "images/power bank.jpg" },
+            { id: 8, name: "LED Desk Lamp", category: "Electronics", price: 849, desc: "Touch dimmer, 3 color modes, USB charging port built-in.", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400" },
+            
+            { id: 9, name: "Wireless Earbuds", category: "Audio", price: 1999, desc: "Active noise cancellation, 24hr total battery. IPX4 water resistant.", img: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400" },
+            { id: 10, name: "Over-Ear Headphones", category: "Audio", price: 3499, desc: "40mm drivers, 30hr playtime, foldable design. Deep bass response.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" },
+            { id: 11, name: "Bluetooth Speaker", category: "Audio", price: 1299, desc: "360° surround sound, 12hr battery, IPX5 waterproof. Travel-ready.", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400" },
+            { id: 12, name: "Neckband Earphones", category: "Audio", price: 699, desc: "Magnetic earbuds, 20hr battery, built-in mic. Comfortable neckband.", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400" },
+            
+            { id: 13, name: "Laptop Backpack 30L", category: "Bags", price: 1699, desc: "Fits 15.6\" laptop. Anti-theft pocket, USB charging port, water resistant.", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400" },
+            { id: 14, name: "Canvas Tote Bag", category: "Bags", price: 499, desc: "Heavy-duty cotton canvas. Perfect for shopping, beach, or daily use.", img: "images/cnavas bag.jpg" },
+            { id: 15, name: "Leather Crossbody Bag", category: "Bags", price: 2199, desc: "Genuine leather, adjustable strap, multiple compartments. Unisex design.", img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400" },
+            { id: 16, name: "Travel Duffle Bag", category: "Bags", price: 1399, desc: "45L capacity, water-resistant nylon, shoe compartment included.", img: "images/duffle bag.jpg" },
+            
+            { id: 17, name: "Casual Sneakers", category: "Footwear", price: 1999, desc: "Lightweight mesh upper, memory foam insole. Available in 6 colors.", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
+            { id: 18, name: "Running Shoes", category: "Footwear", price: 2799, desc: "Breathable knit upper, cushioned sole. Ideal for jogging and gym.", img: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400" },
+            { id: 19, name: "Leather Loafers", category: "Footwear", price: 2499, desc: "Genuine leather upper, slip-on design. Office and casual ready.", img: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=400" },
+            { id: 20, name: "Sports Sandals", category: "Footwear", price: 899, desc: "Adjustable straps, non-slip sole. Great for outdoor and trekking.", img: "https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400" },
+            
+            { id: 21, name: "Sunglasses UV400", category: "Accessories", price: 799, desc: "Polarized lenses, metal frame. Full UV protection. Unisex fit.", img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400" },
+            { id: 22, name: "Leather Wallet", category: "Accessories", price: 649, desc: "Slim bifold, 6 card slots, RFID blocking. Premium tan leather.", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=400" },
+            { id: 23, name: "Phone Case (Universal)", category: "Accessories", price: 299, desc: "Shockproof TPU + hard back. Raised edge camera protection.", img: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400" },
+            { id: 24, name: "Stainless Water Bottle", category: "Accessories", price: 599, desc: "750ml, double-wall insulation. Keeps cold 24hr, hot 12hr. BPA free.", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400" }
+        ];
+
+        var activeCategory = "All";
+        var visibleCount = 4;  
+        var LOAD_STEP = 4;   
+
+        
+        function getFiltered() {
+            if (activeCategory === "All") return allProducts;
+            return allProducts.filter(function (p) { return p.category === activeCategory; });
+        }
+
+        
+        function cardHTML(p) {
+            return '<div class="prod-card" onclick="goToProduct(' + p.id + ')">' +
+                '<img src="' + p.img + '" alt="' + p.name + '" onerror="this.src=\'images/fitnessband.jpg\'">' +
+                '<div class="prod-card-body">' +
+                '<p class="prod-cat-tag">' + p.category + '</p>' +
+                '<h3>' + p.name + '</h3>' +
+                '<p>' + p.desc + '</p>' +
+                '<div class="prod-bottom">' +
+                '<span class="prod-price">₹' + p.price.toLocaleString("en-IN") + '</span>' +
+                '<button class="add-btn" onclick="quickAddToCart(event,' + p.id + ')">+ Cart</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        }
+
+      
+        function renderProducts() {
+            var filtered = getFiltered();
+            var toShow = filtered.slice(0, visibleCount);
+            var grid = document.getElementById("product-grid");
+            var noRes = document.getElementById("no-results");
+            var loadBtn = document.getElementById("load-more-btn");
+            var countEl = document.getElementById("result-count");
+            var titleEl = document.getElementById("active-cat-title");
+
+            titleEl.innerText = activeCategory === "All" ? "All Products" : activeCategory;
+            countEl.innerText = filtered.length + " product" + (filtered.length !== 1 ? "s" : "");
+
+            if (filtered.length === 0) {
+                grid.innerHTML = "";
+                noRes.style.display = "block";
+                loadBtn.style.display = "none";
+                return;
+            }
+
+            noRes.style.display = "none";
+            grid.innerHTML = toShow.map(cardHTML).join("");
+
+        
+            loadBtn.style.display = visibleCount < filtered.length ? "inline-block" : "none";
+        }
+
+        function loadMore() {
+            visibleCount += LOAD_STEP;
+            renderProducts();
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            visibleCount = 4;  
+
+            document.querySelectorAll(".cat-tab").forEach(function (el) {
+                el.classList.toggle("active", el.getAttribute("data-cat") === cat);
+            });
+
+            renderProducts();
+        }
+
+        function goToProduct(id) {
+            var p = allProducts.find(function (x) { return x.id === id; });
+            if (!p) return;
+            localStorage.setItem("selected_product", JSON.stringify(p));
+            window.location.href = "product.html";
+        }
+
+
+        function quickAddToCart(event, id) {
+            event.stopPropagation();
+            var p = allProducts.find(function (x) { return x.id === id; });
+            if (!p) return;
+
+            var cartItems = JSON.parse(localStorage.getItem("mc_cart") || "[]");
+            var found = false;
+            for (var i = 0; i < cartItems.length; i++) {
+                if (cartItems[i].name === p.name) { cartItems[i].qty += 1; found = true; break; }
+            }
+            if (!found) {
+                cartItems.push({ name: p.name, category: p.category, price: p.price, img: p.img, qty: 1 });
+            }
+            localStorage.setItem("mc_cart", JSON.stringify(cartItems));
+            showToast(p.name + " added to cart!");
+        }
+
+        function showToast(msg) {
+            var t = document.getElementById("toast");
+            document.getElementById("toast-text").innerText = msg;
+            t.style.display = "block";
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(function () { t.style.display = "none"; }, 2500);
+        }
+
+        renderProducts();
+
+        window.addEventListener("scroll", function () {
+            var btn = document.getElementById("scroll-top-btn");
+            btn.style.opacity = window.scrollY > 300 ? "1" : "0";
+            btn.style.pointerEvents = window.scrollY > 300 ? "auto" : "none";
+        });
+
+    </script>
+
+</body>
+
+</html>

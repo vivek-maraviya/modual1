@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History | ModernCommerce</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <iframe src="header.html" class="header-frame" frameborder="0"></iframe>
+
+    <div class="page-banner">
+        <h1>Order History</h1>
+        <p>Track and review all your past orders.</p>
+    </div>
+
+    <div class="history-section">
+        <div class="history-layout">
+
+            <div class="profile-sidebar">
+                <div class="user-avatar" id="avatar-letter">J</div>
+                <h3 id="sidebar-name">John Doe</h3>
+                <p class="user-email" id="sidebar-email">john@example.com</p>
+
+                <div class="sidebar-menu">
+                    <a href="myprofile.html">
+                        <i class="fa-solid fa-user"></i> My Profile
+                    </a>
+                    <a href="orderhistory.html" class="active">
+                        <i class="fa-solid fa-bag-shopping"></i> Order History
+                    </a>
+                    <a href="index.html">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a>
+                </div>
+            </div>
+
+            <div class="orders-list" id="orders-list"></div>
+
+        </div>
+    </div>
+
+    <iframe src="footer.html" class="footer-frame" frameborder="0"></iframe>
+
+    <script>
+        window.onload = function() {
+      
+            var profile = JSON.parse(localStorage.getItem("mc_profile") || "{}");
+            var fullName = ((profile.fname || "") + " " + (profile.lname || "")).trim();
+            if (fullName) {
+                document.getElementById("sidebar-name").innerText = fullName;
+                document.getElementById("avatar-letter").innerText = fullName.charAt(0).toUpperCase();
+            }
+            if (profile.email) {
+                document.getElementById("sidebar-email").innerText = profile.email;
+            }
+
+            loadOrders();
+        };
+
+        function loadOrders() {
+            var orders = JSON.parse(localStorage.getItem("mc_orders") || "[]");
+            var container = document.getElementById("orders-list");
+            container.innerHTML = "";
+
+     
+            if (orders.length === 0) {
+                container.innerHTML =
+                    '<div class="no-orders-msg">' +
+                        '<i class="fa-solid fa-bag-shopping"></i>' +
+                        '<p>You have no orders yet.</p><br>' +
+                        '<a href="index.html" class="blue-btn">Shop Now</a>' +
+                    '</div>';
+                return;
+            }
+
+            var reversedOrders = orders.slice().reverse();
+
+            for (var i = 0; i < reversedOrders.length; i++) {
+                var order = reversedOrders[i];
+
+      
+                var itemsHTML = "";
+                for (var j = 0; j < order.items.length; j++) {
+                    var item = order.items[j];
+                    itemsHTML +=
+                        '<div class="order-item-row">' +
+                            '<img src="' + item.img + '" alt="' + item.name + '">' +
+                            '<div class="oi-info">' +
+                                '<h4>' + item.name + '</h4>' +
+                                '<p>Qty: ' + item.qty + ' &nbsp;|&nbsp; ' + item.type + '</p>' +
+                            '</div>' +
+                            '<div class="oi-price">₹' + (item.price * item.qty).toLocaleString("en-IN") + '</div>' +
+                        '</div>';
+                }
+
+           
+                var statusClass = "status-processing";
+                var statusLower = (order.status || "").toLowerCase();
+                if (statusLower === "shipped") statusClass = "status-shipped";
+                if (statusLower === "delivered" || statusLower === "complete") statusClass = "status-delivered";
+
+                var statusSelectHTML = 
+                    '<select class="status-badge ' + statusClass + '" onchange="updateOrderStatus(event, \'' + order.id + '\', this)" style="border:none; outline:none; cursor:pointer; font-family:inherit; font-weight:bold; font-size:12px; padding: 4px 10px; border-radius: 20px;">' +
+                        '<option value="Processing"' + (statusLower === "processing" ? ' selected' : '') + '>Processing</option>' +
+                        '<option value="Shipped"' + (statusLower === "shipped" ? ' selected' : '') + '>Shipped</option>' +
+                        '<option value="Complete"' + (statusLower === "delivered" || statusLower === "complete" ? ' selected' : '') + '>Complete</option>' +
+                    '</select>';
+
+        
+                var card = document.createElement("div");
+                card.className = "order-card";
+                card.innerHTML =
+                    '<div class="order-top">' +
+                        '<div>' +
+                            '<div class="order-id">Order #' + order.id + '</div>' +
+                            '<div class="order-date">' + order.date + '</div>' +
+                        '</div>' +
+                        statusSelectHTML +
+                    '</div>' +
+                    itemsHTML +
+                    '<div class="order-footer">' +
+                        '<div class="total-text">Total: <span>₹' + order.total.toLocaleString("en-IN") + '</span></div>' +
+                        '<a href="index.html" class="blue-btn">Reorder</a>' +
+                    '</div>';
+
+                container.appendChild(card);
+            }
+        }
+
+        function updateOrderStatus(event, orderId, selectEl) {
+            var orders = JSON.parse(localStorage.getItem("mc_orders") || "[]");
+            for (var i = 0; i < orders.length; i++) {
+                if (orders[i].id === orderId) {
+                    orders[i].status = selectEl.value;
+                    break;
+                }
+            }
+            localStorage.setItem("mc_orders", JSON.stringify(orders));
+
+          
+            selectEl.className = "status-badge";
+            var val = selectEl.value.toLowerCase();
+            if (val === "processing") {
+                selectEl.classList.add("status-processing");
+            } else if (val === "shipped") {
+                selectEl.classList.add("status-shipped");
+            } else if (val === "complete") {
+                selectEl.classList.add("status-delivered");
+            }
+        }
+    </script>
+
+</body>
+</html>

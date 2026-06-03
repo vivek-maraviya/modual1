@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernCommerce | Premium Electronics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <iframe src="header.html" class="header-frame" frameborder="0"></iframe>
+
+
+    <div class="hero">
+        <h1>Elevate Your Lifestyle with Premium Tech</h1>
+        <p>Discover our curated collection of high-end electronics designed for your modern life.</p>
+        <a href="#products" class="blue-btn">Shop Now</a>
+    </div>
+
+
+    <div id="products" class="products-section">
+        <h2 class="section-heading">Featured Products</h2>
+
+        <div class="products-row">
+
+   
+            <div class="product-card">
+                <span class="badge">New</span>
+                <img src="images/img_123dc834.jpg" alt="Classic Minimal Watch">
+                <div class="card-info">
+                    <p class="category">Wearables</p>
+                    <h3>Classic Minimal Watch</h3>
+                    <p class="price">₹2,499</p>
+                    <!-- onclick: save product to localStorage then go to product page -->
+                    <a href="product.html" class="outline-btn" onclick="selectProduct('Classic Minimal Watch', 'Wearables', 2499, 'images/img_123dc834.jpg')">View Details</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="images/img_88b5daf3.jpg" alt="Pro Smart Watch">
+                <div class="card-info">
+                    <p class="category">Smartwatches</p>
+                    <h3>Pro Smart Watch Series 7</h3>
+                    <p class="price">₹3,999</p>
+                    <a href="product.html" class="outline-btn" onclick="selectProduct('Pro Smart Watch Series 7', 'Smartwatches', 3999, 'images/img_88b5daf3.jpg')">View Details</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="badge">Bestseller</span>
+                <img src="images/img_b6a409a1.jpg" alt="Aura Wireless Headphones">
+                <div class="card-info">
+                    <p class="category">Audio</p>
+                    <h3>Aura Wireless Headphones</h3>
+                    <p class="price">₹1,999</p>
+                    <a href="product.html" class="outline-btn" onclick="selectProduct('Aura Wireless Headphones', 'Audio', 1999, 'images/img_b6a409a1.jpg')">View Details</a>
+                </div>
+            </div>
+
+
+            <div class="product-card">
+                <img src="images/img_8470e398.jpg" alt="Noir Signature Scent">
+                <div class="card-info">
+                    <p class="category">Accessories</p>
+                    <h3>Noir Signature Scent</h3>
+                    <p class="price">₹850</p>
+                    <a href="product.html" class="outline-btn" onclick="selectProduct('Noir Signature Scent', 'Accessories', 850, 'images/img_8470e398.jpg')">View Details</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="why-us-section">
+        <h2 class="section-heading">Why Choose Us</h2>
+
+        <div class="why-us-row">
+            <div class="why-box">
+                <i class="fa-solid fa-truck-fast"></i>
+                <h3>Free Shipping</h3>
+                <p>Free worldwide shipping on all orders over ₹1,500.</p>
+            </div>
+            <div class="why-box">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>Secure Payment</h3>
+                <p>Your transactions are protected with bank-level encryption.</p>
+            </div>
+            <div class="why-box">
+                <i class="fa-solid fa-rotate-left"></i>
+                <h3>30-Day Returns</h3>
+                <p>Return unused items within 30 days for a full refund.</p>
+            </div>
+            <div class="why-box">
+                <i class="fa-solid fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Our support team is available around the clock for you.</p>
+            </div>
+        </div>
+    </div>
+
+    <iframe src="footer.html" class="footer-frame" frameborder="0"></iframe>
+
+    <script>
+   
+        function selectProduct(name, category, price, img) {
+            var product = {
+                name: name,
+                category: category,
+                price: price,
+                img: img
+            };
+            localStorage.setItem("selected_product", JSON.stringify(product));
+        }
+
+     
+        document.addEventListener("DOMContentLoaded", function() {
+            var images = [
+                'images/1.jpg',
+                'images/2.jpg',
+                'images/3.jpg',
+                'images/4.jpg'
+            ];
+            
+
+            images.forEach(function(src) {
+                var img = new Image();
+                img.src = src;
+            });
+
+            var currentIndex = 0;
+            var hero = document.querySelector('.hero');
+            
+            function updateBackground() {
+                if (hero) {
+                    hero.style.backgroundImage = "linear-gradient(rgba(30, 41, 59, 0.75), rgba(30, 41, 59, 0.75)), url('" + images[currentIndex] + "')";
+                }
+            }
+
+  
+            updateBackground();
+
+
+            setInterval(function() {
+                currentIndex = (currentIndex + 1) % images.length;
+                updateBackground();
+            }, 5000);
+        });
+    </script>
+
+</body>
+</html>

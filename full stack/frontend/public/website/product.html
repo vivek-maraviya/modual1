@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | ModernCommerce</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <iframe src="header.html" class="header-frame" frameborder="0"></iframe>
+
+    <div class="product-detail-section">
+        <div class="product-detail-layout">
+
+   
+            <div class="product-detail-img">
+                <img id="prod-img" src="" alt="" onerror="this.src='images/fitnessband.jpg'">
+            </div>
+
+            <div class="product-detail-info">
+                <p class="category" id="prod-cat"></p>
+                <h1 id="prod-name"></h1>
+                <div class="big-price" id="prod-price"></div>
+
+                <p id="prod-desc"></p>
+
+                <div class="qty-area">
+                    <div class="qty-control">
+                        <button type="button" onclick="lessQty()">-</button>
+                        <input type="number" id="qty-input" value="1" readonly>
+                        <button type="button" onclick="moreQty()">+</button>
+                    </div>
+                    <button class="blue-btn" id="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+                </div>
+
+                <div class="features">
+                    <h3>Features</h3>
+                    <ul id="features-list">
+                    
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <iframe src="footer.html" class="footer-frame" frameborder="0"></iframe>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check" style="margin-right:8px; color:#4ade80;"></i>
+        <span id="toast-text">Added to cart!</span>
+    </div>
+
+    <script>
+        var p = JSON.parse(localStorage.getItem("selected_product") || "null");
+
+    
+        if (!p) {
+            p = {
+                id: 1,
+                name: "Classic Minimal Watch",
+                category: "Wearables",
+                price: 2499,
+                desc: "Sleek stainless steel case with leather strap. Water resistant up to 30m.",
+                img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"
+            };
+        }
+
+
+        document.title = p.name + " | ModernCommerce";
+
+       
+        document.getElementById("prod-img").src = p.img;
+        document.getElementById("prod-img").alt = p.name;
+        document.getElementById("prod-cat").innerText = p.category;
+        document.getElementById("prod-name").innerText = p.name;
+        document.getElementById("prod-desc").innerText = p.desc || "Experience high-quality design and exceptional performance with our premium " + p.name + ". Built to last and styled to impress, it is the perfect addition to your daily lifestyle.";
+        
+        var basePrice = p.price;
+        updatePriceDisplay(1);
+
+    
+        var featuresList = document.getElementById("features-list");
+        var specs = [];
+        var cat = (p.category || "").toLowerCase();
+        
+        if (cat.indexOf("wearable") !== -1 || cat.indexOf("smartwatch") !== -1) {
+            specs = [
+                "40mm premium design case",
+                "Highly durable scratch-resistant glass",
+                "Comfortable strap crafted for all-day wear",
+                "Water resistant construction",
+                "Advanced tracking sensor capability"
+            ];
+        } else if (cat.indexOf("electronic") !== -1) {
+            specs = [
+                "Fast charging support built-in",
+                "Advanced multi-protection safety system",
+                "Ultra-slim and lightweight travel-friendly design",
+                "Premium matte/metallic scratch-resistant finish",
+                "Wide compatibility with standard tech ecosystems"
+            ];
+        } else if (cat.indexOf("audio") !== -1) {
+            specs = [
+                "Hi-Fi studio grade sound clarity",
+                "Ergonomically engineered for comfort and fit",
+                "Advanced wireless connectivity with low latency",
+                "IPX5 splash and sweat resistant body",
+                "Deep dynamic bass enhancement technology"
+            ];
+        } else if (cat.indexOf("bag") !== -1) {
+            specs = [
+                "Water-resistant heavy-duty fabric",
+                "Intelligent multi-pocket layout for smart storage",
+                "Padded breathable shoulder straps",
+                "Sturdy high-performance metal hardware",
+                "Sleek minimalist modern aesthetics"
+            ];
+        } else if (cat.indexOf("footwear") !== -1) {
+            specs = [
+                "Breathable material construction for freshness",
+                "Shock-absorbing responsive cushioned footbed",
+                "Engineered slip-resistant high traction sole",
+                "Featherlight architecture to reduce foot fatigue",
+                "Perfect contour fitting for running or daily walks"
+            ];
+        } else {
+            specs = [
+                "Crafted using premium quality materials",
+                "Classic timeless styling suited for any setting",
+                "Engineered for durability and heavy daily use",
+                "Exceptional attention to details and craftsmanship",
+                "100% satisfaction guaranteed with reliable backup"
+            ];
+        }
+
+        featuresList.innerHTML = specs.map(function(s) {
+            return "<li>" + s + "</li>";
+        }).join("");
+
+        var currentQty = 1;
+
+        function updatePriceDisplay(qty) {
+            document.getElementById("prod-price").innerText = "₹" + (basePrice).toLocaleString("en-IN");
+        }
+
+        function moreQty() {
+            if (currentQty < 10) {
+                currentQty++;
+                document.getElementById("qty-input").value = currentQty;
+                updatePriceDisplay(currentQty);
+            }
+        }
+
+        function lessQty() {
+            if (currentQty > 1) {
+                currentQty--;
+                document.getElementById("qty-input").value = currentQty;
+                updatePriceDisplay(currentQty);
+            }
+        }
+
+        function addToCart() {
+            var cartItems = JSON.parse(localStorage.getItem("mc_cart") || "[]");
+            var found = false;
+            for (var i = 0; i < cartItems.length; i++) {
+                if (cartItems[i].name === p.name) {
+                    cartItems[i].qty += currentQty;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                cartItems.push({
+                    name: p.name,
+                    category: p.category,
+                    price: p.price,
+                    img: p.img,
+                    qty: currentQty
+                });
+            }
+            localStorage.setItem("mc_cart", JSON.stringify(cartItems));
+            showToast(p.name + " added to cart (" + currentQty + " item" + (currentQty !== 1 ? "s" : "") + ")!");
+        }
+
+        function showToast(msg) {
+            var t = document.getElementById("toast");
+            document.getElementById("toast-text").innerText = msg;
+            t.style.display = "block";
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(function() {
+                t.style.display = "none";
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
