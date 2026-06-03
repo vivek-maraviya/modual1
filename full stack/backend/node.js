@@ -4,7 +4,7 @@ var fs = require('fs');
 http.createServer((req, res) => {
 
     res.writeHead(200, { 'Content-Type': 'text/html' });
-
+ 
     if(req.url == "/")
     {
         res.end("<h1>Welcome in Home page</h1>");

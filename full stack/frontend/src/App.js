@@ -1,80 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import Header from './Header'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+
+import Register from "./Pages/Registration";
+import Home from "./Pages/Home";
+import Header from "./Header";
 
 
-const App = () => {
- 
-  
-  const [products, setProducts] = useState([])
 
-  useEffect(() => {
-
-    fetch('https://dummyjson.com/products')
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data.products)
-      })
-      .catch((error) => {
-        console.log("Error:", error)
-      })
-
-  }, [])
-
+function App() {
   return (
-    <>
-    <Header></Header>
-    <div style={{ padding: "20px" }}>
+    <Routes>
 
-      <h1>Products List</h1>
+      <Route path="/" element={<Header />} />
+      <Route path="/Register" element={<Register />} />
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "20px"
-        }}
-      >
+      
 
-        {
-          products.map((product) => (
-
-            <div
-              key={product.id}
-              style={{
-                border: "1px solid #ccc",
-                padding: "15px",
-                borderRadius: "10px"
-              }}
-            >
-
-              <img
-                src={product.thumbnail}
-                alt={product.title}
-                style={{
-                  width: "100%",
-                  height: "200px",
-                  objectFit: "cover"
-                }}
-              />
-
-              <h3>{product.title}</h3>
-
-              <p>{product.description}</p>
-
-              <h2>${product.price}</h2>
-
-            </div>
-
-          ))
-        }
-
-      </div>
-
-    </div>
-    </>
-  )
+    </Routes>
+    
+  );
 }
 
-export default App
-
+export default App;
 

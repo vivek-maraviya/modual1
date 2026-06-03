@@ -1,17 +1,31 @@
-import './App.css'; 
+import './App.css';
+import { Link } from 'react-router-dom';
 
-function Header(){
-    return(
-        <nav>
-            <ul>
-                
-                   <li> <a href="#">Home</a> </li>
-                   <li> <a href="#">About</a></li>
-                   <li><a href="#">Contact</a></li>
-                   
-            </ul>
-        </nav>
-    )
+function Header() {
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+
+        <li>
+          <Link to="/Register">Registration</Link>
+        </li>
+
+       
+        <li>
+          <a
+            href="/website/index.html"
+            target="_blank"
+            rel="noreferrer"
+          >
+            web
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
 }
 
-export default Header
+export default Header;
