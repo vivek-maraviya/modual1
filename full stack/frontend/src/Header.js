@@ -17,8 +17,7 @@ function Header() {
         <li>
           <a
             href="/website/index.html"
-            target="_blank"
-            rel="noreferrer"
+            
           >
             web
           </a>
