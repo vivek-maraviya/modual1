@@ -19,10 +19,10 @@ function Registration() {
     } else {
       setError("");
       axios
-        .post("http://localhost:8080/Registration", { name, email, password })
+        .post(`${process.env.REACT_APP_URL}/Registration`, { name, email, password })
         .then((response) => {
           alert("Registration Successful");
-          navigate("/home");
+          navigate("/");
         })
         .catch((error) => {
           setError("Registration Failed");
