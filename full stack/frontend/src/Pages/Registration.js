@@ -19,7 +19,7 @@ function Registration() {
     } else {
       setError("");
       axios
-        .post(`${process.env.REACT_APP_URL}/Registration`, { name, email, password })
+        .post(`${process.env.REACT_APP_URL}/registration`, { name, email, password })
         .then((response) => {
           alert("Registration Successful");
           navigate("/");

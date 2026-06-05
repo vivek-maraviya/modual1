@@ -14,13 +14,7 @@ function Header() {
         </li>
 
        
-        <li>
-          <a
-            href="/website/index.html"
-            
-          >
-            web
-          </a>
+        <li> <a href="/website/index.html"> web </a>
         </li>
       </ul>
     </nav>
